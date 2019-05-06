@@ -1,0 +1,3 @@
+.vagrant/
+.rh-subscription.yaml
+*.retry

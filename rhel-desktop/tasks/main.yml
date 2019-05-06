@@ -1,0 +1,26 @@
+---
+
+- name: install RHEL Workstation packages
+  dnf:
+    name: '@Workstation'
+    state: present
+
+- name: Setup Vagrant user graphical autologin
+  ini_file:
+    path: /etc/gdm/custom.conf
+    section: "{{ item.section }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+     - { section: daemon, key: AutomaticLoginEnable, value: "true" }
+     - { section: daemon, key: AutomaticLogin, value: "vagrant" }
+
+- name: Change default boot to graphical runlevel
+  shell: "systemctl set-default graphical.target"
+
+- name: Start graphical Desktop session
+  shell: "systemctl isolate graphical.target"
+
+- name: Restart GDM
+  shell: "systemctl restart gdm.service"
